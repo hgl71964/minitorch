@@ -1,5 +1,6 @@
 # a hack to include package path
 import sys
+
 sys.path.insert(0, "/Users/guoliang/workspace/minitorch")
 import minitorch
 import networkx as nx

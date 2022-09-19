@@ -106,11 +106,11 @@ def test_sigmoid(a):
     """
     # TODO: Implement for Task 0.2.
     # raise NotImplementedError("Need to implement for Task 0.2")
-    assert (0<=sigmoid(a)<=1)
-    assert_close(1.-sigmoid(a),  sigmoid(-a))
+    assert 0 <= sigmoid(a) <= 1
+    assert_close(1.0 - sigmoid(a), sigmoid(-a))
     assert_close(sigmoid(0), 0.5)
     # XXX how to test strictly increasing?
-    assert (sigmoid(a+1) >= sigmoid(a))
+    assert sigmoid(a + 1) >= sigmoid(a)
 
 
 @pytest.mark.task0_2
@@ -120,7 +120,7 @@ def test_transitive(a, b, c):
     # TODO: Implement for Task 0.2.
     # raise NotImplementedError("Need to implement for Task 0.2")
     if a < b and b < c:
-        assert(a < c)
+        assert a < c
 
 
 @pytest.mark.task0_2
@@ -144,7 +144,7 @@ def test_distribute(z, x, y):
     """
     # TODO: Implement for Task 0.2.
     # raise NotImplementedError("Need to implement for Task 0.2")
-    assert_close(mul(z, add(x, y)), add(mul(z, x), mul(z, y)) )
+    assert_close(mul(z, add(x, y)), add(mul(z, x), mul(z, y)))
 
 
 @pytest.mark.task0_2

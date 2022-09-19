@@ -184,6 +184,7 @@ def map(fn):
         for i in ll:
             ret.append(fn(i))
         return ret
+
     return mm
 
 
@@ -214,11 +215,12 @@ def zipWith(fn):
     # raise NotImplementedError("Need to implement for Task 0.3")
     def mm(ls1, ls2):
         ret = []
-        assert(len(ls1) == len(ls2)), "list len not eq"
+        assert len(ls1) == len(ls2), "list len not eq"
         for i, j in zip(ls1, ls2):
             res = fn(i, j)
             ret.append(res)
         return ret
+
     return mm
 
 
@@ -253,6 +255,7 @@ def reduce(fn, start):
         for i in ls:
             tmp = fn(i, tmp)
         return tmp
+
     return mm
 
 

@@ -22,12 +22,18 @@ class Module:
     def train(self):
         "Set the mode of this module and all descendent modules to `train`."
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        # raise NotImplementedError("Need to implement for Task 0.4")
+        self.training = True
+        for v in self.modules():
+            v.train()
 
     def eval(self):
         "Set the mode of this module and all descendent modules to `eval`."
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        # raise NotImplementedError("Need to implement for Task 0.4")
+        self.training = False
+        for v in self.modules():
+            v.eval()
 
     def named_parameters(self):
         """
@@ -38,12 +44,26 @@ class Module:
             list of pairs: Contains the name and :class:`Parameter` of each ancestor parameter.
         """
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        # raise NotImplementedError("Need to implement for Task 0.4")
+        ret = []
+        for k, v in self.__dict__["_parameters"].items():
+            ret.append((k, v))
+        for k, v in self.__dict__["_modules"].items():
+            for child_ret in v.named_parameters():
+                ret.append((k + "." + child_ret[0], child_ret[1]))
+        return ret
 
     def parameters(self):
         "Enumerate over all the parameters of this module and its descendents."
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        # raise NotImplementedError("Need to implement for Task 0.4")
+        ret = []
+        for _, v in self.__dict__["_parameters"].items():
+            ret.append(v)
+        for v in self.modules():
+            for i in v.parameters():
+                ret.append(i)
+        return ret
 
     def add_parameter(self, k, v):
         """
