@@ -72,6 +72,9 @@ class ScalarTrain:
         self.model = Network(self.hidden_layers)
         optim = minitorch.SGD(self.model.parameters(), learning_rate)
 
+        print("+" * 40)
+        print(self.model)
+
         losses = []
         for epoch in range(1, self.max_epochs + 1):
             total_loss = 0.0

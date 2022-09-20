@@ -281,7 +281,12 @@ class FunctionBase:
         out = cls.backward(ctx, d_output)
         for i, x in enumerate(inputs):
             if not is_constant(x):
-                ret.append((x, out[i]))
+                if isinstance(out, tuple):
+                    ret.append((x, out[i]))
+                elif isinstance(out, float):
+                    ret.append((x, out))
+                else:
+                    assert False, "unsupported dtype"
         return ret
 
 
@@ -304,7 +309,20 @@ def topological_sort(variable):
                             starting from the right.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError("Need to implement for Task 1.4")
+    # raise NotImplementedError("Need to implement for Task 1.4")
+    ret = []
+
+    def dfs(x):
+        if not is_constant(x):
+            if x.history is not None and x.history.inputs is not None:
+                for i in x.history.inputs:
+                    dfs(i)
+                    ret.append(i)
+            ret.append(x)
+
+    dfs(variable)
+    ret.reverse()
+    return ret
 
 
 def backpropagate(variable, deriv):
@@ -321,4 +339,15 @@ def backpropagate(variable, deriv):
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError("Need to implement for Task 1.4")
+    # raise NotImplementedError("Need to implement for Task 1.4")
+    if is_constant(variable):
+        assert False, "should not called by constant"
+
+    if variable.is_leaf():
+        variable.accumulate_derivative(deriv)
+    else:
+        out = variable.history.last_fn.chain_rule(
+            variable.history.ctx, variable.history.inputs, deriv
+        )
+        for (prev_var, prev_var_deriv) in out:
+            backpropagate(prev_var, prev_var_deriv)
