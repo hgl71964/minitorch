@@ -276,7 +276,13 @@ class FunctionBase:
         # Tip: Note when implementing this function that
         # cls.backward may return either a value or a tuple.
         # TODO: Implement for Task 1.3.
-        raise NotImplementedError("Need to implement for Task 1.3")
+        # raise NotImplementedError("Need to implement for Task 1.3")
+        ret = []
+        out = cls.backward(ctx, d_output)
+        for i, x in enumerate(inputs):
+            if not is_constant(x):
+                ret.append((x, out[i]))
+        return ret
 
 
 # Algorithms for backpropagation
