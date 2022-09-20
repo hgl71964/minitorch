@@ -36,7 +36,8 @@ def neg(x):
     ":math:`f(x) = -x`"
     # TODO: Implement for Task 0.1.
     # raise NotImplementedError("Need to implement for Task 0.1")
-    return -x
+    # XXX type need float?
+    return -float(x)
 
 
 def lt(x, y):
@@ -108,7 +109,7 @@ def relu(x):
     """
     # TODO: Implement for Task 0.1.
     # raise NotImplementedError("Need to implement for Task 0.1")
-    return x if x > 0 else 0
+    return float(x) if x > 0 else 0.0
 
 
 EPS = 1e-6

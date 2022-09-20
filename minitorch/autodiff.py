@@ -229,7 +229,7 @@ class FunctionBase:
 
         """
         # Go through the variables to see if any needs grad.
-        raw_vals = []
+        raw_vals = []  # the actual value of the variable
         need_grad = False
         for v in vals:
             if isinstance(v, Variable):
@@ -244,7 +244,7 @@ class FunctionBase:
         ctx = Context(not need_grad)
 
         # Call forward with the variables.
-        c = cls.forward(ctx, *raw_vals)
+        c = cls.forward(ctx, *raw_vals)  # the raw value
         assert isinstance(c, cls.data_type), "Expected return typ %s got %s" % (
             cls.data_type,
             type(c),
@@ -254,6 +254,8 @@ class FunctionBase:
         back = None
         if need_grad:
             back = History(cls, ctx, vals)
+
+        # build variable via the raw value
         return cls.variable(cls.data(c), back)
 
     @classmethod
