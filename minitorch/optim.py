@@ -16,4 +16,9 @@ class SGD(Optimizer):
     def step(self):
         for p in self.parameters:
             if p.value.derivative is not None:
+
+                # print("update::", end=" ")
+                # print(p.value.derivative)
+
+                # will create new Variable object and overwrite existing
                 p.update(p.value - self.lr * p.value.derivative)

@@ -312,13 +312,20 @@ def topological_sort(variable):
     # raise NotImplementedError("Need to implement for Task 1.4")
     ret = []
 
+    visited = set()
     def dfs(x):
-        if not is_constant(x):
-            if x.history is not None and x.history.inputs is not None:
-                for i in x.history.inputs:
+        if is_constant(x):
+            return
+
+        if x.unique_id in visited:
+            return
+
+        visited.add(x.unique_id)
+        if x.history.inputs is not None:
+            for i in x.history.inputs:
                     dfs(i)
-                    ret.append(i)
-            ret.append(x)
+
+        ret.append(x)
 
     dfs(variable)
     ret.reverse()
@@ -343,11 +350,37 @@ def backpropagate(variable, deriv):
     if is_constant(variable):
         assert False, "should not called by constant"
 
-    if variable.is_leaf():
-        variable.accumulate_derivative(deriv)
-    else:
-        out = variable.history.last_fn.chain_rule(
-            variable.history.ctx, variable.history.inputs, deriv
-        )
-        for (prev_var, prev_var_deriv) in out:
-            backpropagate(prev_var, prev_var_deriv)
+    # tmp map to store all var's gradient
+    # only leaf var needs accumulating the gradient
+    # k: variable ID - v: derivatives
+    m = {variable.unique_id: deriv}
+
+    topo_var = topological_sort(variable)
+    # print([i.unique_id for i in topo_var])
+
+    # backward graph
+    # print("topo:: ", len(topo_var))
+    for var in topo_var:
+        # print(var.unique_id)
+        if var.is_leaf():
+            var.accumulate_derivative(m[var.unique_id])
+        else:
+            assert var.unique_id in m, f"{var.unique_id} should already in map"
+            out = var.history.last_fn.chain_rule(
+                var.history.ctx, var.history.inputs, m[var.unique_id]
+            )
+
+            for (prev_var, prev_var_deriv) in out:
+                # if prev_var_deriv == 0:
+                #     print()
+                #     print(f"me {var.unique_id} - {m[var.unique_id]}")
+                #     print(var.history.last_fn)
+                #     print(out)
+
+
+                if prev_var.unique_id in m:
+                    m[prev_var.unique_id] += prev_var_deriv
+                else:
+                    m[prev_var.unique_id] = prev_var_deriv
+    # print(len(m))
+    # print(m)

@@ -44,6 +44,8 @@ class Linear(minitorch.Module):
 
     def forward(self, inputs):
         # ASSIGN1.5
+        # print(f"self ",end=" :: ")
+        # print([i.value.unique_id for i in self.parameters()])
         y = [b.value for b in self.bias]
         for i, x in enumerate(inputs):
             for j in range(len(y)):
@@ -74,6 +76,11 @@ class ScalarTrain:
 
         print("+" * 40)
         print(self.model)
+        print(len(self.model.layer1.parameters()))
+        print(len(self.model.layer2.parameters()))
+        print(len(self.model.layer3.parameters()))
+        print(self.model.parameters(), len(self.model.parameters()))
+        print([i.value.unique_id for i in self.model.parameters()])
 
         losses = []
         for epoch in range(1, self.max_epochs + 1):
@@ -97,13 +104,27 @@ class ScalarTrain:
                     prob = -out + 1.0
                     correct += 1 if out.data < 0.5 else 0
                 loss = -prob.log()
-                (loss / data.N).backward()
                 total_loss += loss.data
 
             losses.append(total_loss)
 
+            # print("-"*40)
+            # print([i.value.unique_id for i in self.model.layer1.parameters()])
+            # print(len(self.model.parameters()),[i.value.unique_id for i in self.model.parameters()])
+            # print("-"*40)
+
             # Update
             optim.step()
+
+            # update will re-create new Variables; so need to re-register
+            optim = minitorch.SGD(self.model.parameters(), learning_rate)
+
+            # print("-"*40)
+            # print([i.value.unique_id for i in self.model.layer1.parameters()])
+            # print(len(self.model.parameters()),[i.value.unique_id for i in self.model.parameters()])
+            # print(self.model.parameters(), len(self.model.parameters()))
+            # print("-"*40)
+            # raise
 
             # Logging
             if epoch % 10 == 0 or epoch == max_epochs:
@@ -114,5 +135,10 @@ if __name__ == "__main__":
     PTS = 50
     HIDDEN = 2
     RATE = 0.5
-    data = minitorch.datasets["Simple"](PTS)
-    ScalarTrain(HIDDEN).train(data, RATE)
+    data = minitorch.datasets["Diag"](PTS)
+    # data = minitorch.datasets["Simple"](PTS)
+
+    # update epoch
+    max_epochs=5000
+    RATE = 1e-4 * RATE
+    ScalarTrain(HIDDEN).train(data, RATE, max_epochs)
