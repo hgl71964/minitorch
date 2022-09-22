@@ -88,6 +88,9 @@ class ScalarTrain:
             correct = 0
             optim.zero_grad()
 
+            # add a small annealing
+            learning_rate *=0.9999
+
             # Forward
             loss = 0
             for i in range(data.N):
@@ -104,6 +107,7 @@ class ScalarTrain:
                     prob = -out + 1.0
                     correct += 1 if out.data < 0.5 else 0
                 loss = -prob.log()
+                (loss / data.N).backward()
                 total_loss += loss.data
 
             losses.append(total_loss)
@@ -139,6 +143,6 @@ if __name__ == "__main__":
     # data = minitorch.datasets["Simple"](PTS)
 
     # update epoch
-    max_epochs=5000
+    max_epochs = 2000
     RATE = 1e-4 * RATE
     ScalarTrain(HIDDEN).train(data, RATE, max_epochs)
