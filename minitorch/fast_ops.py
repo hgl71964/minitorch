@@ -8,7 +8,6 @@ from .tensor_data import (
 )
 from numba import njit, prange
 
-
 # TIP: Use `NUMBA_DISABLE_JIT=1 pytest tests/ -m task3_1` to run these tests without JIT.
 
 # This code will JIT compile fast versions your tensor_data functions.
@@ -41,7 +40,6 @@ def tensor_map(fn):
     Returns:
         None : Fills in `out`
     """
-
     def _map(out, out_shape, out_strides, in_storage, in_shape, in_strides):
         # TODO: Implement for Task 3.1.
         raise NotImplementedError("Need to implement for Task 3.1")
@@ -105,7 +103,6 @@ def tensor_zip(fn):
     Returns:
         None : Fills in `out`
     """
-
     def _zip(
         out,
         out_shape,
@@ -173,8 +170,8 @@ def tensor_reduce(fn):
         None : Fills in `out`
 
     """
-
-    def _reduce(out, out_shape, out_strides, a_storage, a_shape, a_strides, reduce_dim):
+    def _reduce(out, out_shape, out_strides, a_storage, a_shape, a_strides,
+                reduce_dim):
         # TODO: Implement for Task 3.1.
         raise NotImplementedError("Need to implement for Task 3.1")
 

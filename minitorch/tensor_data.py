@@ -25,7 +25,13 @@ def index_to_position(index, strides):
     """
 
     # TODO: Implement for Task 2.1.
-    raise NotImplementedError("Need to implement for Task 2.1")
+    # raise NotImplementedError("Need to implement for Task 2.1")
+
+    # index is n-dim index; thus need to map to list index
+    res = 0
+    for i, j in zip(index, strides):
+        res += i * j
+    return res
 
 
 def to_index(ordinal, shape, out_index):
@@ -45,7 +51,15 @@ def to_index(ordinal, shape, out_index):
 
     """
     # TODO: Implement for Task 2.1.
-    raise NotImplementedError("Need to implement for Task 2.1")
+    # raise NotImplementedError("Need to implement for Task 2.1")
+
+    # storage is a list of data; similar to how memory works
+    # thus need to map the list index to actual n-dim index
+    n = len(shape)
+    for i in range(n - 1, -1, -1):
+        mod = ordinal % shape[i]
+        ordinal = ordinal // shape[i]
+        out_index[i] = mod
 
 
 def broadcast_index(big_index, big_shape, shape, out_index):
@@ -109,7 +123,8 @@ class TensorData:
         assert isinstance(strides, tuple), "Strides must be tuple"
         assert isinstance(shape, tuple), "Shape must be tuple"
         if len(strides) != len(shape):
-            raise IndexingError(f"Len of strides {strides} must match {shape}.")
+            raise IndexingError(
+                f"Len of strides {strides} must match {shape}.")
         self._strides = array(strides)
         self._shape = array(shape)
         self.strides = strides
@@ -151,9 +166,11 @@ class TensorData:
             raise IndexingError(f"Index {index} must be size of {self.shape}.")
         for i, ind in enumerate(index):
             if ind >= self.shape[i]:
-                raise IndexingError(f"Index {index} out of range {self.shape}.")
+                raise IndexingError(
+                    f"Index {index} out of range {self.shape}.")
             if ind < 0:
-                raise IndexingError(f"Negative indexing for {index} not supported.")
+                raise IndexingError(
+                    f"Negative indexing for {index} not supported.")
 
         # Call fast indexing.
         return index_to_position(array(index), self._strides)
@@ -192,7 +209,23 @@ class TensorData:
         ), f"Must give a position to each dimension. Shape: {self.shape} Order: {order}"
 
         # TODO: Implement for Task 2.1.
-        raise NotImplementedError("Need to implement for Task 2.1")
+        # raise NotImplementedError("Need to implement for Task 2.1")
+
+        # e.g. with order = (1, 0) => shape:: [2, 5] -> [5, 2]
+        # storage is a list of data
+        # it is up to strides and shape to interpret the index
+        new_shape = []
+        new_strides = []
+        for i in order:
+            new_shape.append(self.shape[i])
+            new_strides.append(self.strides[i])
+
+        # print("old, ", self.shape)
+        # print("order, ", order)
+        # print("new_shape, ", new_shape)
+
+        # the returned TensorData is not longer contiguous
+        return TensorData(self._storage, tuple(new_shape), tuple(new_strides))
 
     def to_string(self):
         s = ""

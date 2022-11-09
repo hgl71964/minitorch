@@ -9,7 +9,6 @@ class Module:
         training (bool): Whether the module is in training mode or evaluation mode
 
     """
-
     def __init__(self):
         self._modules = {}
         self._parameters = {}
@@ -136,7 +135,6 @@ class Parameter:
     It is designed to hold a :class:`Variable`, but we allow it to hold
     any value for testing.
     """
-
     def __init__(self, x=None, name=None):
         self.value = x
         self.name = name

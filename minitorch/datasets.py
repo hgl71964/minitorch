@@ -50,7 +50,8 @@ def xor(N):
     X = make_pts(N)
     y = []
     for x_1, x_2 in X:
-        y1 = 1 if ((x_1 < 0.5 and x_2 > 0.5) or (x_1 > 0.5 and x_2 < 0.5)) else 0
+        y1 = 1 if ((x_1 < 0.5 and x_2 > 0.5) or
+                   (x_1 > 0.5 and x_2 < 0.5)) else 0
         y.append(y1)
     return Graph(N, X, y)
 
@@ -72,14 +73,13 @@ def spiral(N):
     def y(t):
         return t * math.sin(t) / 20.0
 
-    X = [
-        (x(10.0 * (float(i) / (N // 2))) + 0.5, y(10.0 * (float(i) / (N // 2))) + 0.5)
-        for i in range(5 + 0, 5 + N // 2)
-    ]
-    X = X + [
-        (y(-10.0 * (float(i) / (N // 2))) + 0.5, x(-10.0 * (float(i) / (N // 2))) + 0.5)
-        for i in range(5 + 0, 5 + N // 2)
-    ]
+    X = [(x(10.0 * (float(i) / (N // 2))) + 0.5,
+          y(10.0 * (float(i) / (N // 2))) + 0.5)
+         for i in range(5 + 0, 5 + N // 2)]
+    X = X + [(y(-10.0 * (float(i) /
+                         (N // 2))) + 0.5, x(-10.0 * (float(i) /
+                                                      (N // 2))) + 0.5)
+             for i in range(5 + 0, 5 + N // 2)]
     y = [0] * (N // 2) + [1] * (N // 2)
     return Graph(N, X, y)
 

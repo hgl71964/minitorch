@@ -1,6 +1,5 @@
 variable_count = 1
 
-
 # ## Module 1
 
 # Variable is the main class for autodifferentiation logic for scalars
@@ -15,7 +14,6 @@ class Variable:
         grad (variable type) : alias for derivative, used for tensors
         name (string) : a globally unique name of the variable
     """
-
     def __init__(self, history, name=None):
         global variable_count
         assert history is None or isinstance(history, History), history
@@ -114,7 +112,7 @@ def wrap_tuple(x):
     "Turn a possible value into a tuple"
     if isinstance(x, tuple):
         return x
-    return (x,)
+    return (x, )
 
 
 def unwrap_tuple(x):
@@ -136,7 +134,6 @@ class Context:
         saved_values (tuple) : tuple of values saved for backward pass
         saved_tensors (tuple) : alias for saved_values
     """
-
     def __init__(self, no_grad=False):
         self._saved_values = None
         self.no_grad = no_grad
@@ -174,7 +171,6 @@ class History:
         inputs (list of inputs) : The inputs that were given when `last_fn.forward` was called.
 
     """
-
     def __init__(self, last_fn=None, ctx=None, inputs=None):
         self.last_fn = last_fn
         self.ctx = ctx
@@ -202,7 +198,6 @@ class FunctionBase:
     Call by :func:`FunctionBase.apply`.
 
     """
-
     @staticmethod
     def variable(raw, history):
         # Implement by children class.
@@ -245,10 +240,11 @@ class FunctionBase:
 
         # Call forward with the variables.
         c = cls.forward(ctx, *raw_vals)  # the raw value
-        assert isinstance(c, cls.data_type), "Expected return typ %s got %s" % (
-            cls.data_type,
-            type(c),
-        )
+        assert isinstance(c,
+                          cls.data_type), "Expected return typ %s got %s" % (
+                              cls.data_type,
+                              type(c),
+                          )
 
         # Create a new variable from the result with a new history.
         back = None
@@ -313,6 +309,7 @@ def topological_sort(variable):
     ret = []
 
     visited = set()
+
     def dfs(x):
         if is_constant(x):
             return
@@ -323,7 +320,7 @@ def topological_sort(variable):
         visited.add(x.unique_id)
         if x.history.inputs is not None:
             for i in x.history.inputs:
-                    dfs(i)
+                dfs(i)
 
         ret.append(x)
 
@@ -366,9 +363,9 @@ def backpropagate(variable, deriv):
             var.accumulate_derivative(m[var.unique_id])
         else:
             assert var.unique_id in m, f"{var.unique_id} should already in map"
-            out = var.history.last_fn.chain_rule(
-                var.history.ctx, var.history.inputs, m[var.unique_id]
-            )
+            out = var.history.last_fn.chain_rule(var.history.ctx,
+                                                 var.history.inputs,
+                                                 m[var.unique_id])
 
             for (prev_var, prev_var_deriv) in out:
                 # if prev_var_deriv == 0:
@@ -376,7 +373,6 @@ def backpropagate(variable, deriv):
                 #     print(f"me {var.unique_id} - {m[var.unique_id]}")
                 #     print(var.history.last_fn)
                 #     print(out)
-
 
                 if prev_var.unique_id in m:
                     m[prev_var.unique_id] += prev_var_deriv

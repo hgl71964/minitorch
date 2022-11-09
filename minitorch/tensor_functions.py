@@ -2,7 +2,6 @@
 Implementation of the autodifferentiation Functions for Tensor.
 """
 
-
 from .autodiff import FunctionBase
 from .tensor_ops import TensorOps
 import numpy as np
@@ -157,8 +156,7 @@ def make_tensor_backend(tensor_ops, is_cuda=False):
                     return add_reduce(a, dim)
                 else:
                     return add_reduce(
-                        a.contiguous().view(int(operators.prod(a.shape))), 0
-                    )
+                        a.contiguous().view(int(operators.prod(a.shape))), 0)
 
             @staticmethod
             def backward(ctx, grad_output):
@@ -177,8 +175,7 @@ def make_tensor_backend(tensor_ops, is_cuda=False):
                     return mul_reduce(a, dim)
                 else:
                     return mul_reduce(
-                        a.contiguous().view(int(operators.prod(a.shape))), 0
-                    )
+                        a.contiguous().view(int(operators.prod(a.shape))), 0)
 
         class LT(Function):
             @staticmethod
@@ -224,14 +221,16 @@ def make_tensor_backend(tensor_ops, is_cuda=False):
             def forward(ctx, a, shape):
                 ctx.save_for_backward(a.shape)
                 assert a._tensor.is_contiguous(), "Must be contiguous to view"
-                return Tensor.make(a._tensor._storage, shape, backend=a.backend)
+                return Tensor.make(a._tensor._storage,
+                                   shape,
+                                   backend=a.backend)
 
             @staticmethod
             def backward(ctx, grad_output):
                 original = ctx.saved_values
-                return Tensor.make(
-                    grad_output._tensor._storage, original, backend=grad_output.backend
-                )
+                return Tensor.make(grad_output._tensor._storage,
+                                   original,
+                                   backend=grad_output.backend)
 
         class Copy(Function):
             @staticmethod
@@ -280,7 +279,9 @@ def zeros(shape, backend=TensorFunctions):
     Returns:
         :class:`Tensor` : new tensor
     """
-    return Tensor.make([0] * int(operators.prod(shape)), shape, backend=backend)
+    return Tensor.make([0] * int(operators.prod(shape)),
+                       shape,
+                       backend=backend)
 
 
 def rand(shape, backend=TensorFunctions, requires_grad=False):
@@ -331,7 +332,6 @@ def tensor(ls, backend=TensorFunctions, requires_grad=False):
     Returns:
         :class:`Tensor` : new tensor
     """
-
     def shape(ls):
         if isinstance(ls, (list, tuple)):
             return [len(ls)] + shape(ls[0])
@@ -346,7 +346,10 @@ def tensor(ls, backend=TensorFunctions, requires_grad=False):
 
     cur = flatten(ls)
     shape = shape(ls)
-    return _tensor(cur, tuple(shape), backend=backend, requires_grad=requires_grad)
+    return _tensor(cur,
+                   tuple(shape),
+                   backend=backend,
+                   requires_grad=requires_grad)
 
 
 # Gradient check for tensors

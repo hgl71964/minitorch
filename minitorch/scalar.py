@@ -2,7 +2,6 @@ from .autodiff import FunctionBase, Variable, History
 from . import operators
 import numpy as np
 
-
 # ## Task 1.1
 # Central Difference calculation
 
@@ -50,7 +49,6 @@ class Scalar(Variable):
     Attributes:
         data (float): The wrapped scalar value.
     """
-
     def __init__(self, v, back=History(), name=None):
         super().__init__(back, name=name)
         self.data = float(v)
@@ -133,7 +131,6 @@ class ScalarFunction(FunctionBase):
     This is a static class and is never instantiated. We use `class`
     here to group together the `forward` and `backward` code.
     """
-
     @staticmethod
     def forward(ctx, *inputs):
         r"""
@@ -371,6 +368,6 @@ but was expecting derivative f'=%f from central difference."""
             check.data,
             1e-2,
             1e-2,
-            err_msg=err_msg
-            % (str([x.data for x in scalars]), x.derivative, i, check.data),
+            err_msg=err_msg %
+            (str([x.data for x in scalars]), x.derivative, i, check.data),
         )

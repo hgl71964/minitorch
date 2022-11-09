@@ -2,7 +2,6 @@
 Collection of the core mathematical operators used throughout the code base.
 """
 
-
 import math
 
 # ## Task 0.1
@@ -178,6 +177,7 @@ def map(fn):
         function : A function that takes a list, applies `fn` to each element, and returns a
         new list
     """
+
     # TODO: Implement for Task 0.3.
     # raise NotImplementedError("Need to implement for Task 0.3")
     def mm(ll):
@@ -212,6 +212,7 @@ def zipWith(fn):
         applying fn(x, y) on each pair of elements.
 
     """
+
     # TODO: Implement for Task 0.3.
     # raise NotImplementedError("Need to implement for Task 0.3")
     def mm(ls1, ls2):
@@ -248,6 +249,7 @@ def reduce(fn, start):
         :math:`x_1 \ldots x_n` and computes the reduction :math:`fn(x_3, fn(x_2,
         fn(x_1, x_0)))`
     """
+
     # TODO: Implement for Task 0.3.
     # raise NotImplementedError("Need to implement for Task 0.3")
     def mm(ls):

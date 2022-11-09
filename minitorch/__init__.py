@@ -4,7 +4,6 @@ from .testing import MathTest, MathTestVariable  # noqa: F401,F403
 # MODULE 0
 from .module import *  # noqa: F401,F403
 
-
 # MODULE 1
 from .scalar import *  # noqa: F401,F403
 from .autodiff import *  # noqa: F401,F403

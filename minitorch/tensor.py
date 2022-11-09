@@ -6,7 +6,6 @@ from .autodiff import Variable
 from .tensor_data import TensorData
 from . import operators
 
-
 # This class is very similar to Scalar so we implemented it for you.
 
 
@@ -20,7 +19,6 @@ class Tensor(Variable):
         _tensor (:class:`TensorData`) : the tensor data storage
         backend : backend object used to implement tensor math (see `tensor_functions.py`)
     """
-
     def __init__(self, v, back=None, name=None, backend=None):
         assert isinstance(v, TensorData)
         assert backend is not None
@@ -63,7 +61,7 @@ class Tensor(Variable):
     def _ensure_tensor(self, b):
         "Turns a python number into a tensor with the same backend."
         if isinstance(b, (int, float)):
-            b = Tensor.make([b], (1,), backend=self.backend)
+            b = Tensor.make([b], (1, ), backend=self.backend)
         else:
             b._type_(self.backend)
         return b
@@ -80,13 +78,11 @@ class Tensor(Variable):
 
     def __truediv__(self, b):
         return self.backend.Mul.apply(
-            self, self.backend.Inv.apply(self._ensure_tensor(b))
-        )
+            self, self.backend.Inv.apply(self._ensure_tensor(b)))
 
     def __rtruediv__(self, b):
-        return self.backend.Mul.apply(
-            self._ensure_tensor(b), self.backend.Inv.apply(self)
-        )
+        return self.backend.Mul.apply(self._ensure_tensor(b),
+                                      self.backend.Inv.apply(self))
 
     def __matmul__(self, b):
         "Not used until Module 3"
@@ -204,20 +200,23 @@ class Tensor(Variable):
 
         # Case 3: Still different, reduce extra dims.
         out = buf
-        orig_shape = [1] * (len(out.shape) - len(self.shape)) + list(self.shape)
+        orig_shape = [1] * (len(out.shape) - len(self.shape)) + list(
+            self.shape)
         for dim, shape in enumerate(out.shape):
             if orig_shape[dim] == 1 and shape != 1:
                 out = self.backend._add_reduce(out, dim)
         assert out.size == self.size, f"{out.shape} {self.shape}"
         # START CODE CHANGE (2021)
-        return Tensor.make(out._tensor._storage, self.shape, backend=self.backend)
+        return Tensor.make(out._tensor._storage,
+                           self.shape,
+                           backend=self.backend)
         # END CODE CHANGE (2021)
 
     def zeros(self, shape=None):
         def zero(shape):
-            return Tensor.make(
-                [0] * int(operators.prod(shape)), shape, backend=self.backend
-            )
+            return Tensor.make([0] * int(operators.prod(shape)),
+                               shape,
+                               backend=self.backend)
 
         if shape is None:
             out = zero(self.shape)
@@ -234,6 +233,7 @@ class Tensor(Variable):
 
     def backward(self, grad_output=None):
         if grad_output is None:
-            assert self.shape == (1,), "Must provide grad_output if non-scalar"
-            grad_output = Tensor.make([1.0], (1,), backend=self.backend)
+            assert self.shape == (
+                1, ), "Must provide grad_output if non-scalar"
+            grad_output = Tensor.make([1.0], (1, ), backend=self.backend)
         super().backward(grad_output)

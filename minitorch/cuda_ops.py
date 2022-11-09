@@ -40,8 +40,8 @@ def tensor_map(fn):
     Returns:
         None : Fills in `out`
     """
-
-    def _map(out, out_shape, out_strides, out_size, in_storage, in_shape, in_strides):
+    def _map(out, out_shape, out_strides, out_size, in_storage, in_shape,
+             in_strides):
         # TODO: Implement for Task 3.3.
         raise NotImplementedError("Need to implement for Task 3.3")
 
@@ -88,7 +88,6 @@ def tensor_zip(fn):
     Returns:
         None : Fills in `out`
     """
-
     def _zip(
         out,
         out_shape,
@@ -115,9 +114,8 @@ def zip(fn):
         out = a.zeros(c_shape)
         threadsperblock = THREADS_PER_BLOCK
         blockspergrid = (out.size + (threadsperblock - 1)) // threadsperblock
-        f[blockspergrid, threadsperblock](
-            *out.tuple(), out.size, *a.tuple(), *b.tuple()
-        )
+        f[blockspergrid, threadsperblock](*out.tuple(), out.size, *a.tuple(),
+                                          *b.tuple())
         return out
 
     return ret
@@ -153,14 +151,13 @@ jit_sum_practice = cuda.jit()(_sum_practice)
 
 
 def sum_practice(a):
-    (size,) = a.shape
+    (size, ) = a.shape
     threadsperblock = THREADS_PER_BLOCK
     blockspergrid = (size // THREADS_PER_BLOCK) + 1
-    out = TensorData([0.0 for i in range(2)], (2,))
+    out = TensorData([0.0 for i in range(2)], (2, ))
     out.to_cuda_()
-    jit_sum_practice[blockspergrid, threadsperblock](
-        out.tuple()[0], a._tensor._storage, size
-    )
+    jit_sum_practice[blockspergrid, threadsperblock](out.tuple()[0],
+                                                     a._tensor._storage, size)
     return out
 
 
@@ -182,7 +179,6 @@ def tensor_reduce(fn):
     Returns:
         None : Fills in `out`
     """
-
     def _reduce(
         out,
         out_shape,
@@ -233,9 +229,8 @@ def reduce(fn, start=0.0):
 
         threadsperblock = 1024
         blockspergrid = out_a.size
-        f[blockspergrid, threadsperblock](
-            *out_a.tuple(), out_a.size, *a.tuple(), dim, start
-        )
+        f[blockspergrid, threadsperblock](*out_a.tuple(), out_a.size,
+                                          *a.tuple(), dim, start)
 
         return out_a
 
@@ -286,9 +281,9 @@ def mm_practice(a, b):
     blockspergrid = 1
     out = TensorData([0.0 for i in range(size * size)], (size, size))
     out.to_cuda_()
-    jit_mm_practice[blockspergrid, threadsperblock](
-        out.tuple()[0], a._tensor._storage, b._tensor._storage, size
-    )
+    jit_mm_practice[blockspergrid,
+                    threadsperblock](out.tuple()[0], a._tensor._storage,
+                                     b._tensor._storage, size)
     return out
 
 
@@ -381,9 +376,9 @@ def matrix_multiply(a, b):
     )
     threadsperblock = (THREADS_PER_BLOCK, THREADS_PER_BLOCK, 1)
 
-    tensor_matrix_multiply[blockspergrid, threadsperblock](
-        *out.tuple(), out.size, *a.tuple(), *b.tuple()
-    )
+    tensor_matrix_multiply[blockspergrid,
+                           threadsperblock](*out.tuple(), out.size, *a.tuple(),
+                                            *b.tuple())
 
     # Undo 3d if we added it.
     if both_2d:
