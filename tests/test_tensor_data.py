@@ -81,12 +81,12 @@ def test_permute(data):
     ind = data.draw(indices(td))
     td_rev = td.permute(*list(reversed(range(td.dims))))
 
-    print()
-    print(*list(reversed(range(td.dims))))
-    print(td.shape, td_rev.shape)
-    print(ind)
-    print(tuple(reversed(ind)))
-    print()
+    # print()
+    # print(*list(reversed(range(td.dims))))
+    # print(td.shape, td_rev.shape)
+    # print(ind)
+    # print(tuple(reversed(ind)))
+    # print()
 
     assert td.index(ind) == td_rev.index(tuple(reversed(ind)))
 
