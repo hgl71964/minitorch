@@ -28,10 +28,10 @@ def index_to_position(index, strides):
     # raise NotImplementedError("Need to implement for Task 2.1")
 
     # index is n-dim index; thus need to map to list index
-    res = 0
+    position = 0
     for i, j in zip(index, strides):
-        res += i * j
-    return res
+        position += i * j
+    return position
 
 
 def to_index(ordinal, shape, out_index):
@@ -53,7 +53,7 @@ def to_index(ordinal, shape, out_index):
     # TODO: Implement for Task 2.1.
     # raise NotImplementedError("Need to implement for Task 2.1")
 
-    # storage is a list of data; similar to how memory works
+    # storage is a list of data, i.e. similar to how memory works
     # thus need to map the list index to actual n-dim index
     n = len(shape)
     for i in range(n - 1, -1, -1):
@@ -97,8 +97,49 @@ def shape_broadcast(shape1, shape2):
     Raises:
         IndexingError : if cannot broadcast
     """
+
     # TODO: Implement for Task 2.2.
-    raise NotImplementedError("Need to implement for Task 2.2")
+    # raise NotImplementedError("Need to implement for Task 2.2")
+
+    def helper(s1, s2):
+        # see: https://numpy.org/doc/stable/user/basics.broadcasting.html
+        broadcast_able = True
+        new_shape = []
+        for i, (v1, v2) in enumerate(zip(s1, s2)):
+            if v1 == v2:
+                new_shape.append(v1)
+            elif v1 == 1:
+                new_shape.append(v2)
+            elif v2 == 1:
+                new_shape.append(v1)
+            else:
+                broadcast_able = False
+                break
+        return new_shape, broadcast_able
+
+    n1 = len(shape1)
+    n2 = len(shape2)
+
+    # if equal dim
+    if n1 == n2:
+        new_shape, broadcast_able = helper(shape1, shape2)
+    else:
+        # non-equal dim, pad first
+        diff = abs(n1 - n2)
+        if n1 < n2:
+            new_shape1_front = tuple([1 for i in range(diff)]) + shape1
+            new_shape, broadcast_able = helper(new_shape1_front, shape2)
+        elif n1 > n2:
+            new_shape2_front = tuple([1 for i in range(diff)]) + shape2
+            new_shape, broadcast_able = helper(new_shape2_front, shape1)
+        else:
+            raise IndexingError(f"impossible")
+
+    if not broadcast_able:
+        raise IndexingError(
+            f"shape1: {shape1} and shape2: {shape2} are not broadcast-able")
+
+    return tuple(new_shape)
 
 
 def strides_from_shape(shape):
