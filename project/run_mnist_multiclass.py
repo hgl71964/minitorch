@@ -1,10 +1,8 @@
 from mnist import MNIST
 import minitorch
 
-
 mndata = MNIST("data/")
 images, labels = mndata.load_training()
-
 
 BACKEND = minitorch.make_tensor_backend(minitorch.FastOps)
 BATCH = 16
@@ -30,9 +28,9 @@ class Linear(minitorch.Module):
 
     def forward(self, x):
         batch, in_size = x.shape
-        return (
-            x.view(batch, in_size) @ self.weights.value.view(in_size, self.out_size)
-        ).view(batch, self.out_size) + self.bias.value
+        return (x.view(batch, in_size) @ self.weights.value.view(
+            in_size, self.out_size)).view(batch,
+                                          self.out_size) + self.bias.value
 
 
 class Conv2d(minitorch.Module):
@@ -62,7 +60,6 @@ class Network(minitorch.Module):
     6. Apply a Linear to size C (number of classes).
     7. Apply a logsoftmax over the class dimension.
     """
-
     def __init__(self):
         super().__init__()
 
@@ -115,9 +112,12 @@ class ImageTrain:
     def run_one(self, x):
         return self.model.forward(minitorch.tensor([x], backend=BACKEND))
 
-    def train(
-        self, data_train, data_val, learning_rate, max_epochs=500, log_fn=default_log_fn
-    ):
+    def train(self,
+              data_train,
+              data_val,
+              learning_rate,
+              max_epochs=500,
+              log_fn=default_log_fn):
         (X_train, y_train) = data_train
         (X_val, y_val) = data_val
         self.model = Network()
@@ -130,17 +130,14 @@ class ImageTrain:
 
             model.train()
             for batch_num, example_num in enumerate(
-                range(0, n_training_samples, BATCH)
-            ):
+                    range(0, n_training_samples, BATCH)):
 
                 if n_training_samples - example_num <= BATCH:
                     continue
-                y = minitorch.tensor(
-                    y_train[example_num : example_num + BATCH], backend=BACKEND
-                )
-                x = minitorch.tensor(
-                    X_train[example_num : example_num + BATCH], backend=BACKEND
-                )
+                y = minitorch.tensor(y_train[example_num:example_num + BATCH],
+                                     backend=BACKEND)
+                x = minitorch.tensor(X_train[example_num:example_num + BATCH],
+                                     backend=BACKEND)
                 x.requires_grad_(True)
                 y.requires_grad_(True)
                 # Forward
@@ -164,14 +161,15 @@ class ImageTrain:
                     correct = 0
                     for val_example_num in range(0, 1 * BATCH, BATCH):
                         y = minitorch.tensor(
-                            y_val[val_example_num : val_example_num + BATCH],
+                            y_val[val_example_num:val_example_num + BATCH],
                             backend=BACKEND,
                         )
                         x = minitorch.tensor(
-                            X_val[val_example_num : val_example_num + BATCH],
+                            X_val[val_example_num:val_example_num + BATCH],
                             backend=BACKEND,
                         )
-                        out = model.forward(x.view(BATCH, 1, H, W)).view(BATCH, C)
+                        out = model.forward(x.view(BATCH, 1, H,
+                                                   W)).view(BATCH, C)
                         for i in range(BATCH):
                             m = -1000
                             ind = -1

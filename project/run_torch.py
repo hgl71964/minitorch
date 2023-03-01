@@ -24,8 +24,9 @@ class Network(torch.nn.Module):
 class Linear(torch.nn.Module):
     def __init__(self, in_size, out_size):
         super().__init__()
-        self.weight = torch.nn.Parameter(2 * (torch.rand((in_size, out_size)) - 0.5))
-        self.bias = torch.nn.Parameter(2 * (torch.rand((out_size,)) - 0.5))
+        self.weight = torch.nn.Parameter(2 * (torch.rand(
+            (in_size, out_size)) - 0.5))
+        self.bias = torch.nn.Parameter(2 * (torch.rand((out_size, )) - 0.5))
 
     def forward(self, x):
         return x @ self.weight + self.bias
@@ -57,7 +58,8 @@ class TorchTrain:
         for epoch in range(1, max_epochs + 1):
 
             # Forward
-            out = model.forward(torch.tensor(data.X, requires_grad=True)).view(data.N)
+            out = model.forward(torch.tensor(data.X,
+                                             requires_grad=True)).view(data.N)
             y = torch.tensor(data.y)
             probs = (out * y) + (out - 1.0) * (y - 1.0)
             loss = -probs.log().sum()

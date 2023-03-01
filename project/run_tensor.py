@@ -38,10 +38,9 @@ class Linear(minitorch.Module):
     def forward(self, x):
         # ASSIGN2.5
         batch, in_size = x.shape
-        return (
-            self.weights.value.view(1, in_size, self.out_size)
-            * x.view(batch, in_size, 1)
-        ).sum(1).view(batch, self.out_size) + self.bias.value.view(self.out_size)
+        return (self.weights.value.view(1, in_size, self.out_size) *
+                x.view(batch, in_size, 1)).sum(1).view(
+                    batch, self.out_size) + self.bias.value.view(self.out_size)
         # END ASSIGN2.5
 
 
@@ -60,7 +59,11 @@ class TensorTrain:
     def run_many(self, X):
         return self.model.forward(minitorch.tensor(X))
 
-    def train(self, data, learning_rate, max_epochs=500, log_fn=default_log_fn):
+    def train(self,
+              data,
+              learning_rate,
+              max_epochs=500,
+              log_fn=default_log_fn):
 
         self.learning_rate = learning_rate
         self.max_epochs = max_epochs

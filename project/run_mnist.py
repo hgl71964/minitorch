@@ -7,7 +7,6 @@ vis = visdom.Visdom()
 mndata = MNIST("data/")
 images, labels = mndata.load_training()
 
-
 BACKEND = minitorch.make_tensor_functions(minitorch.FastOps)
 RATE = 0.01
 HIDDEN = 20
@@ -36,7 +35,7 @@ class MMLinear(minitorch.Module):
         r = minitorch.rand((in_size, out_size))
         r.type_(BACKEND)
         self.weights = minitorch.Parameter(0.1 * (r - 0.5))
-        r = minitorch.rand((out_size,))
+        r = minitorch.rand((out_size, ))
         r.type_(BACKEND)
         self.bias = minitorch.Parameter(0.1 * (r - 0.5))
         self.out_size = out_size
@@ -62,7 +61,8 @@ class Conv2d(minitorch.Module):
         self.bias = minitorch.Parameter(0.1 * (r - 0.5))
 
     def forward(self, input):
-        out = minitorch.Conv2dFun.apply(input, self.weights.value) + self.bias.value
+        out = minitorch.Conv2dFun.apply(input,
+                                        self.weights.value) + self.bias.value
         return out
 
 
@@ -104,10 +104,8 @@ for i in range(10000, 10500):
     if y == 3 or y == 5:
         val_ys.append(1.0 if y == 3 else 0.0)
         val_x += images[i]
-vis.images(
-    numpy.array(val_x).reshape((len(val_ys), 1, 28, 28))[:BATCH], win="val_images"
-)
-
+vis.images(numpy.array(val_x).reshape((len(val_ys), 1, 28, 28))[:BATCH],
+           win="val_images")
 
 model = Network2()
 losses = []
@@ -117,8 +115,8 @@ for epoch in range(250):
     for i, j in enumerate(range(0, len(ys), BATCH)):
         if len(ys) - j <= BATCH:
             continue
-        y = minitorch.tensor(ys[j : j + BATCH], (BATCH,))
-        x = minitorch.tensor(X[cur : cur + 28 * 28 * BATCH], (BATCH, 28 * 28))
+        y = minitorch.tensor(ys[j:j + BATCH], (BATCH, ))
+        x = minitorch.tensor(X[cur:cur + 28 * 28 * BATCH], (BATCH, 28 * 28))
         x.requires_grad_(True)
         y.requires_grad_(True)
         y.type_(BACKEND)
@@ -137,8 +135,8 @@ for epoch in range(250):
                 p.update(p.value - RATE * (p.value.grad / float(BATCH)))
         if i % 10 == 0:
             correct = 0
-            y = minitorch.tensor(val_ys[:BATCH], (BATCH,))
-            x = minitorch.tensor(val_x[: (BATCH * 28 * 28)], (BATCH, 28 * 28))
+            y = minitorch.tensor(val_ys[:BATCH], (BATCH, ))
+            x = minitorch.tensor(val_x[:(BATCH * 28 * 28)], (BATCH, 28 * 28))
             out = model.forward(x.view(BATCH, 1, 28, 28)).view(BATCH)
             for i in range(BATCH):
                 if y[i] == 1 and out[i] > 0.5:
@@ -147,13 +145,13 @@ for epoch in range(250):
                     correct += 1
             for channel in range(4):
                 vis.images(
-                    -1 * model.mid.to_numpy()[:, channel : channel + 1],
+                    -1 * model.mid.to_numpy()[:, channel:channel + 1],
                     win=f"mid_images_{channel}",
                     opts=dict(nrow=4, caption=f"mid_images_{channel}"),
                 )
             for channel in range(8):
                 vis.images(
-                    -1 * model.out.to_numpy()[:, channel : channel + 1],
+                    -1 * model.out.to_numpy()[:, channel:channel + 1],
                     win=f"out_images_{channel}",
                     opts=dict(nrow=4, caption=f"out_images_{channel}"),
                 )

@@ -7,9 +7,9 @@ from math_interface import render_math_sandbox
 
 parser = ArgumentParser()
 parser.add_argument("module_num", type=int)
-parser.add_argument(
-    "--hide_function_defs", action="store_true", dest="hide_function_defs"
-)
+parser.add_argument("--hide_function_defs",
+                    action="store_true",
+                    dest="hide_function_defs")
 args = parser.parse_args()
 module_num = args.module_num
 hide_function_defs = args.hide_function_defs
@@ -19,23 +19,21 @@ st.sidebar.markdown(
     """
 <h1 style="font-size:30pt; float: left; margin-right: 20px; margin-top: 1px;">MiniTorch</h1>{}
 """.format(
-        get_img_tag("https://minitorch.github.io/_images/match.png", width="40")
-    ),
+        get_img_tag("https://minitorch.github.io/_images/match.png",
+                    width="40")),
     unsafe_allow_html=True,
 )
 
-st.sidebar.markdown(
-    """
+st.sidebar.markdown("""
     [Documentation](https://minitorch.github.io/)
-"""
-)
+""")
 
 module_selection = st.sidebar.radio(
     "Module",
-    ["Module 0", "Module 1", "Module 2", "Module 3", "Module 4"][: module_num + 1],
+    ["Module 0", "Module 1", "Module 2", "Module 3",
+     "Module 4"][:module_num + 1],
     index=module_num,
 )
-
 
 PAGES = {}
 
@@ -92,7 +90,6 @@ if module_selection == "Module 2":
     PAGES["Autograd Sandbox"] = lambda: render_show_expression(True)
     PAGES["Module 2: Tensor"] = render_run_tensor_interface
 
-
 if module_selection == "Module 3":
     from run_fast_tensor import FastTrain
 
@@ -108,7 +105,6 @@ if module_selection == "Module 4":
 
     PAGES["Module 4: Images"] = render_run_image_interface
     PAGES["Module 4: Sentiment"] = render_run_sentiment_interface
-
 
 PAGE_OPTIONS = list(PAGES.keys())
 

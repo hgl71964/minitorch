@@ -11,8 +11,8 @@ def make_scatters(graph, model=None, size=50):
     if model is not None:
         colorscale = [[0, "#69bac9"], [1.0, "#ea8484"]]
         z = [
-            model([[j / (size + 1.0), k / (size + 1.0)] for j in range(size + 1)])
-            for k in range(size + 1)
+            model([[j / (size + 1.0), k / (size + 1.0)]
+                   for j in range(size + 1)]) for k in range(size + 1)
         ]
         scatters.append(
             go.Contour(
@@ -27,8 +27,7 @@ def make_scatters(graph, model=None, size=50):
                 colorscale=colorscale,
                 opacity=0.6,
                 showscale=False,
-            )
-        )
+            ))
     scatters.append(
         go.Scatter(
             mode="markers",
@@ -37,8 +36,7 @@ def make_scatters(graph, model=None, size=50):
             marker_symbol=symbols,
             marker_color=colors,
             marker=dict(size=15, line=dict(width=3, color="Black")),
-        )
-    )
+        ))
     return scatters
 
 
@@ -55,7 +53,9 @@ def animate(self, models, names):
         step = dict(
             method="update",
             args=[
-                {"visible": [False] * len(background) + [True]},
+                {
+                    "visible": [False] * len(background) + [True]
+                },
                 {},
             ],  # layout attribute
             label="%1.3f" % names[i],
@@ -64,12 +64,13 @@ def animate(self, models, names):
         steps.append(step)
 
     sliders = [
-        dict(active=0, currentvalue={"prefix": "b="}, pad={"t": 50}, steps=steps)
+        dict(active=0,
+             currentvalue={"prefix": "b="},
+             pad={"t": 50},
+             steps=steps)
     ]
 
-    fig = go.Figure(
-        data=background + [points],
-    )
+    fig = go.Figure(data=background + [points], )
     fig.update_layout(sliders=sliders)
 
     fig.update_layout(
@@ -106,8 +107,7 @@ def make_oned(graph, model=None, size=50):
                 x=[j / (size + 1.0) for j in range(size + 1)],
                 y=y,
                 marker=dict(size=15, line=dict(width=3, color="Black")),
-            )
-        )
+            ))
         print(x, y)
     scatters.append(
         go.Scatter(
@@ -117,8 +117,7 @@ def make_oned(graph, model=None, size=50):
             marker_symbol=symbols,
             marker_color=colors,
             marker=dict(size=15, line=dict(width=3, color="Black")),
-        )
-    )
+        ))
     return scatters
 
 

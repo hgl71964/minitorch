@@ -19,17 +19,24 @@ def render_run_image_interface():
     )
     (X_train, y_train) = make_mnist(0, n_training_samples)
 
-    show = st.number_input("Image", min_value=0, max_value=100, step=1, value=1)
+    show = st.number_input("Image",
+                           min_value=0,
+                           max_value=100,
+                           step=1,
+                           value=1)
     st.write(
-        px.imshow(X_train[show], title="y =" + str([int(i) for i in y_train[show]]))
-    )
+        px.imshow(X_train[show],
+                  title="y =" + str([int(i) for i in y_train[show]])))
 
     st.markdown("### Hyperparameters")
     col1, col2 = st.beta_columns(2)
-    learning_rate = col1.selectbox(
-        "Learning rate", [0.001, 0.01, 0.05, 0.1, 0.5, 1.0, 5.0], index=2
-    )
-    max_epochs = col2.number_input("Number of epochs", min_value=1, step=25, value=500)
+    learning_rate = col1.selectbox("Learning rate",
+                                   [0.001, 0.01, 0.05, 0.1, 0.5, 1.0, 5.0],
+                                   index=2)
+    max_epochs = col2.number_input("Number of epochs",
+                                   min_value=1,
+                                   step=25,
+                                   value=500)
 
     col1, col2 = st.beta_columns(2)
     st_train_button = col1.empty()
@@ -52,13 +59,13 @@ def render_run_image_interface():
             st_progress.progress(epoch / max_epochs)
             time_per_epoch = time_elapsed / (epoch + 1)
             st_epoch_timer.markdown(
-                "Epoch {}/{}. Time per epoch: {:,.3f}s. Time left: {:,.2f}s.".format(
+                "Epoch {}/{}. Time per epoch: {:,.3f}s. Time left: {:,.2f}s.".
+                format(
                     epoch,
                     max_epochs,
                     time_per_epoch,
                     (max_epochs - epoch) * time_per_epoch,
-                )
-            )
+                ))
             df.append({"epoch": epoch, "loss": total_loss, "correct": correct})
             st_epoch_stats.write(pd.DataFrame(reversed(df)))
 
@@ -66,7 +73,9 @@ def render_run_image_interface():
             fig = px.imshow(-1 * model.mid.to_numpy()[0], facet_col=0)
             st_epoch_image.plotly_chart(fig)
 
-            loss_graph = go.Scatter(mode="lines", x=list(range(len(losses))), y=losses)
+            loss_graph = go.Scatter(mode="lines",
+                                    x=list(range(len(losses))),
+                                    y=losses)
             fig = go.Figure(loss_graph)
             fig.update_layout(
                 title="Loss Graph",

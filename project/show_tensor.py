@@ -7,12 +7,10 @@ x1 = np.array(list(map(lambda x: x + 3, x))).ravel()
 y1 = y.copy()
 x2 = np.array(list(map(lambda x: x1 + 3, x))).ravel()
 y2 = y.copy()
-initial_matrix = np.vstack(
-    [
-        np.hstack([[1, 1, 1, 1, 1], np.ones(5) * 2]),
-        np.array([1, 2, 3, 4, 5, 1, 2, 3, 4, 5]),
-    ]
-)
+initial_matrix = np.vstack([
+    np.hstack([[1, 1, 1, 1, 1], np.ones(5) * 2]),
+    np.array([1, 2, 3, 4, 5, 1, 2, 3, 4, 5]),
+])
 axis_default = ["i", "k", "j"]
 
 
@@ -32,10 +30,25 @@ def plot_matrix(x, y, title, w=300, h=500, bg="white"):
     ]
 
     layout = go.Layout(
-        title={"text": title, "x": 0.5, "y": 0.9, "xanchor": "center"},
-        font={"family": "Raleway", "size": 40, "color": "black"},
-        xaxis={"showgrid": False, "showticklabels": False},
-        yaxis={"showgrid": False, "showticklabels": False},
+        title={
+            "text": title,
+            "x": 0.5,
+            "y": 0.9,
+            "xanchor": "center"
+        },
+        font={
+            "family": "Raleway",
+            "size": 40,
+            "color": "black"
+        },
+        xaxis={
+            "showgrid": False,
+            "showticklabels": False
+        },
+        yaxis={
+            "showgrid": False,
+            "showticklabels": False
+        },
         paper_bgcolor=bg,
         plot_bgcolor=bg,
         autosize=False,
@@ -68,10 +81,25 @@ def plot_map():
     ]
 
     layout = go.Layout(
-        title={"text": "map", "x": 0.5, "y": 0.9, "xanchor": "center"},
-        font={"family": "Raleway", "size": 40, "color": "black"},
-        xaxis={"showgrid": False, "showticklabels": False},
-        yaxis={"showgrid": False, "showticklabels": False},
+        title={
+            "text": "map",
+            "x": 0.5,
+            "y": 0.9,
+            "xanchor": "center"
+        },
+        font={
+            "family": "Raleway",
+            "size": 40,
+            "color": "black"
+        },
+        xaxis={
+            "showgrid": False,
+            "showticklabels": False
+        },
+        yaxis={
+            "showgrid": False,
+            "showticklabels": False
+        },
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         autosize=False,
@@ -144,10 +172,25 @@ def plot_zip():
     ]
 
     layout = go.Layout(
-        title={"text": "zip", "x": 0.5, "y": 0.9, "xanchor": "center"},
-        font={"family": "Raleway", "size": 40, "color": "black"},
-        xaxis={"showgrid": False, "showticklabels": False},
-        yaxis={"showgrid": False, "showticklabels": False},
+        title={
+            "text": "zip",
+            "x": 0.5,
+            "y": 0.9,
+            "xanchor": "center"
+        },
+        font={
+            "family": "Raleway",
+            "size": 40,
+            "color": "black"
+        },
+        xaxis={
+            "showgrid": False,
+            "showticklabels": False
+        },
+        yaxis={
+            "showgrid": False,
+            "showticklabels": False
+        },
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         autosize=False,
@@ -212,10 +255,25 @@ def plot_reduce():
     ]
 
     layout = go.Layout(
-        title={"text": "reduce", "x": 0.5, "y": 0.9, "xanchor": "center"},
-        font={"family": "Raleway", "size": 40, "color": "black"},
-        xaxis={"showgrid": False, "showticklabels": False},
-        yaxis={"showgrid": False, "showticklabels": False},
+        title={
+            "text": "reduce",
+            "x": 0.5,
+            "y": 0.9,
+            "xanchor": "center"
+        },
+        font={
+            "family": "Raleway",
+            "size": 40,
+            "color": "black"
+        },
+        xaxis={
+            "showgrid": False,
+            "showticklabels": False
+        },
+        yaxis={
+            "showgrid": False,
+            "showticklabels": False
+        },
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         autosize=False,
@@ -332,8 +390,7 @@ def plot_tensor(x, y, z, active=5):
                 visible=True,
                 lighting=dict(ambient=0.5, diffuse=0.6),
                 lightposition=dict(x=0, y=0, z=0),
-            )
-        )
+            ))
 
     # Add boxes to fig
     def box_adder(boxes):
@@ -378,31 +435,28 @@ def plot_tensor(x, y, z, active=5):
 
         for ind, i in enumerate(boxes):
             add_one_box(
-                ind,
-                *construct_whole_box(i),
-                str((np.array([i[0], i[2], i[1]]) / (1.1)).astype(int))
-                .replace(" ", ",")
-                .replace("[", "(")
-                .replace("]", ")")
-            )
+                ind, *construct_whole_box(i),
+                str((np.array([i[0], i[2], i[1]]) /
+                     (1.1)).astype(int)).replace(" ", ",").replace(
+                         "[", "(").replace("]", ")"))
 
     box_adder(tensor_coords)
     return fig
 
 
 def tensor_figure(
-    x,
-    y,
-    z,
-    active,
-    title,
-    xr=None,
-    yr=None,
-    zr=None,
-    axisTitles=axis_default,
-    slider=True,
-    eye=dict(x=2.8, y=1.6, z=1.6),
-    show_fig=True,
+        x,
+        y,
+        z,
+        active,
+        title,
+        xr=None,
+        yr=None,
+        zr=None,
+        axisTitles=axis_default,
+        slider=True,
+        eye=dict(x=2.8, y=1.6, z=1.6),
+        show_fig=True,
 ):
     fig = plot_tensor(x, y, z, active=active)
     if xr is None:
@@ -420,7 +474,9 @@ def tensor_figure(
                         "opacity": [1.0] * len(fig.data),
                         "color": ["white"] * len(fig.data),
                     },
-                    {"title": "Tensor Index: " + val["name"]},
+                    {
+                        "title": "Tensor Index: " + val["name"]
+                    },
                 ],
             )
             # Toggle i'th trace
@@ -428,28 +484,37 @@ def tensor_figure(
             step["args"][0]["color"][i] = "#69bac9"
             steps.append(step)
 
-        fig.update_layout(
-            sliders=[
-                dict(
-                    active=active,
-                    steps=steps,
-                    currentvalue=dict(visible=False),
-                    tickcolor="#fcfcfc",
-                    font=dict(color="#fcfcfc"),
-                ),
-            ],
-        )
+        fig.update_layout(sliders=[
+            dict(
+                active=active,
+                steps=steps,
+                currentvalue=dict(visible=False),
+                tickcolor="#fcfcfc",
+                font=dict(color="#fcfcfc"),
+            ),
+        ], )
 
     camera = dict(up=dict(x=0, y=0, z=1), center=dict(x=0, y=0, z=0), eye=eye)
 
     fig.update_layout(
-        title={"text": title, "x": 0.5, "y": 0.9, "xanchor": "center"},
-        font={"family": "Raleway", "size": 40, "color": "black"},
+        title={
+            "text": title,
+            "x": 0.5,
+            "y": 0.9,
+            "xanchor": "center"
+        },
+        font={
+            "family": "Raleway",
+            "size": 40,
+            "color": "black"
+        },
         scene_camera=camera,
         paper_bgcolor="#fcfcfc",
         font_size=20,
         hovermode="x unified",
-        hoverlabel=dict(bgcolor="#fcfcfc", font_size=30, font_family="Times New Roman"),
+        hoverlabel=dict(bgcolor="#fcfcfc",
+                        font_size=30,
+                        font_family="Times New Roman"),
         scene=dict(
             xaxis=dict(
                 showbackground=False,

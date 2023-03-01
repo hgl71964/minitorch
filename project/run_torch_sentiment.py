@@ -33,9 +33,9 @@ class SentimentCNN(nn.Module):
         #    self.embedding.requires_grad = False
 
         # 2. convolutional layers
-        self.convs = nn.ModuleList(
-            [nn.Conv1d(embedding_dim, feature_map_size, k) for k in kernel_sizes]
-        )
+        self.convs = nn.ModuleList([
+            nn.Conv1d(embedding_dim, feature_map_size, k) for k in kernel_sizes
+        ])
 
         # 3. final, fully-connected layer for classification
         self.fc = nn.Linear(len(kernel_sizes) * feature_map_size, 1)
@@ -73,9 +73,12 @@ class SentimentCNN(nn.Module):
 
 
 # training loop
-def train(
-    model, data_train, data_val, learning_rate=0.001, max_epochs=50, batch_size=128
-):
+def train(model,
+          data_train,
+          data_val,
+          learning_rate=0.001,
+          max_epochs=50,
+          batch_size=128):
     # loss and optimization functions
     criterion = nn.BCELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
@@ -92,10 +95,9 @@ def train(
         train_loss = 0
         n_batches = 0
         for batch_num, example_num in enumerate(
-            range(0, n_training_samples, batch_size)
-        ):
-            y = torch.tensor(y_train[example_num : example_num + batch_size])
-            x = torch.tensor(X_train[example_num : example_num + batch_size])
+                range(0, n_training_samples, batch_size)):
+            y = torch.tensor(y_train[example_num:example_num + batch_size])
+            x = torch.tensor(X_train[example_num:example_num + batch_size])
             model.zero_grad()
 
             # get the output from the model
@@ -110,7 +112,8 @@ def train(
             n_batches += 1
 
             for i, y_true in enumerate(y):
-                if output[i] > 0.5 and y_true == 1.0 or output[i] < 0.5 and y_true == 0:
+                if output[i] > 0.5 and y_true == 1.0 or output[
+                        i] < 0.5 and y_true == 0:
                     train_correct += 1
 
         # Evaluate on validation set after epoch
@@ -124,7 +127,8 @@ def train(
         val_losses.append(val_loss.item())
         val_correct = 0
         for i, y_true in enumerate(y):
-            if output[i] > 0.5 and y_true == 1.0 or output[i] < 0.5 and y_true == 0:
+            if output[i] > 0.5 and y_true == 1.0 or output[
+                    i] < 0.5 and y_true == 0:
                 val_correct += 1
         model.train()
         # print(y, output)
@@ -146,9 +150,9 @@ if __name__ == "__main__":
     EMBEDDING_SIZE = 50
     (X_train, y_train), (X_val, y_val) = encode_sentiment_data(
         load_dataset("glue", "sst2"),
-        embeddings.GloveEmbedding(
-            "wikipedia_gigaword", d_emb=EMBEDDING_SIZE, show_progress=True
-        ),
+        embeddings.GloveEmbedding("wikipedia_gigaword",
+                                  d_emb=EMBEDDING_SIZE,
+                                  show_progress=True),
         2500,
         250,
     )

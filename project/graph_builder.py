@@ -40,14 +40,14 @@ class GraphBuilder:
 
     def get_name(self, x):
         if not isinstance(x, minitorch.Variable):
-            return "constant %s" % (x,)
+            return "constant %s" % (x, )
         elif len(x.name) > 15:
             if x.name in self.intermediates:
-                return "v%d" % (self.intermediates[x.name],)
+                return "v%d" % (self.intermediates[x.name], )
             else:
                 self.hid = self.hid + 1
                 self.intermediates[x.name] = self.hid
-                return "v%d" % (self.hid,)
+                return "v%d" % (self.hid, )
         else:
             return x.name
 
@@ -58,7 +58,7 @@ class GraphBuilder:
         G.add_node(self.get_name(final))
 
         while queue:
-            (cur,) = queue[0]
+            (cur, ) = queue[0]
             queue = queue[1:]
 
             if minitorch.is_constant(cur) or cur.is_leaf():
