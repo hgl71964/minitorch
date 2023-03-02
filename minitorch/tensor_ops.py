@@ -8,6 +8,30 @@ from .tensor_data import (
 )
 
 
+def _check_shape_larger(out_shape, in_shape) -> bool:
+    n1 = len(out_shape)
+    n2 = len(in_shape)
+
+    if n1 == n2:
+        for k in range(n1):
+            i = out_shape[k]
+            j = in_shape[k]
+            if i < j:
+                return False
+    elif n1 > n2:
+        diff = n1 - n2
+        new_in_shape = tuple([1 for i in range(diff)]) + tuple(in_shape)
+        for k in range(n1):
+            i = out_shape[k]
+            j = new_in_shape[k]
+            if i < j:
+                return False
+    else:
+        return False
+
+    return True
+
+
 def tensor_map(fn):
     """
     Low-level implementation of tensor map between
@@ -39,7 +63,28 @@ def tensor_map(fn):
     """
     def _map(out, out_shape, out_strides, in_storage, in_shape, in_strides):
         # TODO: Implement for Task 2.2.
-        raise NotImplementedError("Need to implement for Task 2.2")
+        # raise NotImplementedError("Need to implement for Task 2.2")
+        assert (_check_shape_larger(out_shape,
+                                    in_shape)), f"{out_shape} - {in_shape}"
+
+        # total output size
+        out_size = 1
+        for i in out_shape:
+            out_size *= i
+
+        for out_ordinal in range(out_size):
+            # make index buffer
+            big_index = np.array(out_shape)
+            in_index = np.array(in_shape)
+            # compute index
+            to_index(out_ordinal, out_shape, big_index)
+            broadcast_index(big_index, out_shape, in_shape, in_index)
+            # print(big_index)
+            # print(in_index)
+            # write
+            in_strorage_val = in_storage[index_to_position(
+                in_index, in_strides)]
+            out[out_ordinal] = fn(in_strorage_val)
 
     return _map
 
@@ -129,7 +174,30 @@ def tensor_zip(fn):
         b_strides,
     ):
         # TODO: Implement for Task 2.2.
-        raise NotImplementedError("Need to implement for Task 2.2")
+        # raise NotImplementedError("Need to implement for Task 2.2")
+        assert (_check_shape_larger(out_shape,
+                                    a_shape)), f"{out_shape} - {a_shape}"
+        assert (_check_shape_larger(out_shape,
+                                    b_shape)), f"{out_shape} - {b_shape}"
+
+        # total output size
+        out_size = 1
+        for i in out_shape:
+            out_size *= i
+
+        for out_ordinal in range(out_size):
+            # make index buffer
+            a_index = np.array(a_shape)
+            b_index = np.array(b_shape)
+            out_index = np.array(out_shape)
+            # compute index
+            to_index(out_ordinal, out_shape, out_index)
+            broadcast_index(out_index, out_shape, a_shape, a_index)
+            broadcast_index(out_index, out_shape, b_shape, b_index)
+            # write
+            a_strorage_val = a_storage[index_to_position(a_index, a_strides)]
+            b_strorage_val = b_storage[index_to_position(b_index, b_strides)]
+            out[out_ordinal] = fn(a_strorage_val, b_strorage_val)
 
     return _zip
 
@@ -200,7 +268,32 @@ def tensor_reduce(fn):
     def _reduce(out, out_shape, out_strides, a_storage, a_shape, a_strides,
                 reduce_dim):
         # TODO: Implement for Task 2.2.
-        raise NotImplementedError("Need to implement for Task 2.2")
+        # raise NotImplementedError("Need to implement for Task 2.2")
+
+        # total output size
+        a_size = 1
+        for i in a_shape:
+            a_size *= i
+
+        for a_ordinal in range(a_size):
+            # make index buffer
+            a_index = np.array(a_shape)
+
+            # compute index
+            to_index(a_ordinal, a_shape, a_index)
+
+            out_correspond_index = [0] * len(a_index)
+            for i, v in enumerate(a_index):
+                if i != reduce_dim:
+                    out_correspond_index[i] = v
+                else:
+                    out_correspond_index[i] = 0
+
+            out_position = index_to_position(out_correspond_index, out_strides)
+
+            # write
+            a_strorage_val = a_storage[a_ordinal]
+            out[out_position] = fn(out[out_position], a_strorage_val)
 
     return _reduce
 

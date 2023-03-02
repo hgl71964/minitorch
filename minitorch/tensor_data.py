@@ -80,7 +80,29 @@ def broadcast_index(big_index, big_shape, shape, out_index):
         None : Fills in `out_index`.
     """
     # TODO: Implement for Task 2.2.
-    raise NotImplementedError("Need to implement for Task 2.2")
+    # raise NotImplementedError("Need to implement for Task 2.2")
+    n1 = len(big_shape)
+    n2 = len(shape)
+
+    diff = n1 - n2
+    assert (diff >= 0), f"n1 {n1} - n2 {n2}"
+
+    new_in_shape = tuple([1 for i in range(diff)]) + tuple(shape)
+    new_in_index_buffer = array(new_in_shape)
+
+    for i, (v1, v2) in enumerate(zip(big_shape, new_in_shape)):
+        if v1 == v2:
+            # if dim equal, then index mapping is the same
+            new_in_index_buffer[i] = big_index[i]
+        else:
+            # otherwise, only map to 0 (broadcast rule)
+            new_in_index_buffer[i] = 0
+
+    # alignment starts from the last dim
+    # NOTE: this is because new_in_index_buffer is broadcast to
+    # have the same shape as big_shape
+    for i in range(n2):
+        out_index[-i - 1] = new_in_index_buffer[-i - 1]
 
 
 def shape_broadcast(shape1, shape2):
@@ -103,6 +125,7 @@ def shape_broadcast(shape1, shape2):
 
     def helper(s1, s2):
         # see: https://numpy.org/doc/stable/user/basics.broadcasting.html
+        # core: pad 1 to leading dimension if shapes mismatch
         broadcast_able = True
         new_shape = []
         for i, (v1, v2) in enumerate(zip(s1, s2)):
