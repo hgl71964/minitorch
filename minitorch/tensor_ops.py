@@ -64,6 +64,7 @@ def tensor_map(fn):
     def _map(out, out_shape, out_strides, in_storage, in_shape, in_strides):
         # TODO: Implement for Task 2.2.
         # raise NotImplementedError("Need to implement for Task 2.2")
+        # NOTE: the idea is write to tensor storage
         assert (_check_shape_larger(out_shape,
                                     in_shape)), f"{out_shape} - {in_shape}"
 

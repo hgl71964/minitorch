@@ -282,7 +282,12 @@ class FunctionBase:
                 elif isinstance(out, float):
                     ret.append((x, out))
                 else:
-                    assert False, "unsupported dtype"
+                    # print(out)
+                    # print(type(out))
+                    # assert False, f"unsupported dtype"
+
+                    # in tensor assignemnt, `out` can be of type tensor
+                    ret.append((x, out))
         return ret
 
 
