@@ -89,11 +89,31 @@ def make_tensor_backend(tensor_ops, is_cuda=False):
         class Add(Function):
             @staticmethod
             def forward(ctx, t1, t2):
+                ctx.save_for_backward(t1.shape, t2.shape)
                 return add_zip(t1, t2)
 
             @staticmethod
             def backward(ctx, grad_output):
-                return grad_output, grad_output
+                s1, s2 = ctx.saved_values
+
+                def _handle_broadcast_grad(original_shape, grad_output_shape,
+                                           out):
+                    # NOTE: this is needed for broadcasting tensor grad
+                    # print(f"{grad_output_shape}:{original_shape}")
+                    diff = len(grad_output_shape) - len(original_shape)
+                    new_shape = tuple([1 for i in range(diff)
+                                       ]) + tuple(original_shape)
+                    for dim_index, (i, j) in enumerate(
+                            zip(new_shape, grad_output_shape)):
+                        if i != j:
+                            out = add_reduce(out, dim_index)
+                    return out
+
+                # return grad_output, grad_output  # <- if no need to broadcast tensor grad
+                return _handle_broadcast_grad(
+                    s1, grad_output.shape,
+                    grad_output), _handle_broadcast_grad(
+                        s2, grad_output.shape, grad_output)
 
         class Mul(Function):
             @staticmethod
@@ -108,8 +128,25 @@ def make_tensor_backend(tensor_ops, is_cuda=False):
                 # TODO: Implement for Task 2.4.
                 # raise NotImplementedError("Need to implement for Task 2.4")
                 a, b = ctx.saved_values
-                # return a, b
-                return mul_zip(grad_output, b), mul_zip(grad_output, a)
+                s1, s2 = a.shape, b.shape
+
+                def _handle_broadcast_grad(original_shape, grad_output_shape,
+                                           out):
+                    diff = len(grad_output_shape) - len(original_shape)
+                    new_shape = tuple([1 for i in range(diff)
+                                       ]) + tuple(original_shape)
+                    for dim_index, (i, j) in enumerate(
+                            zip(new_shape, grad_output_shape)):
+                        if i != j:
+                            out = add_reduce(out, dim_index)
+                    return out
+
+                # return mul_zip(grad_output, b), mul_zip(grad_output, a) # <- if no need to broadcast tensor grad
+                return _handle_broadcast_grad(
+                    s1, grad_output.shape, mul_zip(grad_output,
+                                                   b)), _handle_broadcast_grad(
+                                                       s2, grad_output.shape,
+                                                       mul_zip(grad_output, a))
 
         class Sigmoid(Function):
             @staticmethod

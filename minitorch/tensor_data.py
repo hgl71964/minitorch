@@ -247,6 +247,7 @@ class TensorData:
             yield tuple(out_index)
 
     def sample(self):
+        # sample an index
         return tuple((random.randint(0, s - 1) for s in self.shape))
 
     def get(self, key):
