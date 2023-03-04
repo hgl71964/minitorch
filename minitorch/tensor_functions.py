@@ -99,10 +99,11 @@ def make_tensor_backend(tensor_ops, is_cuda=False):
                 def _handle_broadcast_grad(original_shape, grad_output_shape,
                                            out):
                     # NOTE: this is needed for broadcasting tensor grad
-                    # print(f"{grad_output_shape}:{original_shape}")
                     diff = len(grad_output_shape) - len(original_shape)
                     new_shape = tuple([1 for i in range(diff)
                                        ]) + tuple(original_shape)
+
+                    # accumulate if the dim is broadcasted!
                     for dim_index, (i, j) in enumerate(
                             zip(new_shape, grad_output_shape)):
                         if i != j:
@@ -135,6 +136,8 @@ def make_tensor_backend(tensor_ops, is_cuda=False):
                     diff = len(grad_output_shape) - len(original_shape)
                     new_shape = tuple([1 for i in range(diff)
                                        ]) + tuple(original_shape)
+
+                    # accumulate if the dim is broadcasted!
                     for dim_index, (i, j) in enumerate(
                             zip(new_shape, grad_output_shape)):
                         if i != j:
