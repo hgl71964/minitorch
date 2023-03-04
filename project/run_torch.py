@@ -1,5 +1,5 @@
 import torch
-import minitorch
+mport minitorch
 
 
 def default_log_fn(epoch, total_loss, correct, losses):

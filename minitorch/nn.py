@@ -1,3 +1,4 @@
+from .tensor_ops import TensorOps
 from .fast_ops import FastOps
 from .tensor_functions import rand, Function
 from . import operators
@@ -92,7 +93,9 @@ def softmax(input, dim):
         :class:`Tensor` : softmax tensor
     """
     # TODO: Implement for Task 4.4.
-    raise NotImplementedError("Need to implement for Task 4.4")
+    # raise NotImplementedError("Need to implement for Task 4.4")
+    exp_out = input.exp()
+    return exp_out / exp_out.sum(dim)
 
 
 def logsoftmax(input, dim):
@@ -113,7 +116,10 @@ def logsoftmax(input, dim):
         :class:`Tensor` : log of softmax tensor
     """
     # TODO: Implement for Task 4.4.
-    raise NotImplementedError("Need to implement for Task 4.4")
+    # raise NotImplementedError("Need to implement for Task 4.4")
+    # print(input.shape)
+    # print(input.exp().sum(dim).log().shape)
+    return input - input.exp().sum(dim).log()  # FIXME
 
 
 def maxpool2d(input, kernel):
