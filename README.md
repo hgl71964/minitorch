@@ -1,8 +1,8 @@
 
 
-<img src="http://minitorch.github.io/_images/minitorch.svg">
+# minitorch
 
-python 3.9
+python 3.11
 
 This repo is the full student code for minitorch. It is designed as a
 single repo that can be completed part by part following the guide book.
